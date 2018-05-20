@@ -42,6 +42,7 @@ public class Client {
         System.out.println("Choose creation mode:");
         System.out.println("\tEnter 1 for No.1 mode, All settings are pre-defined.");
         System.out.println("\tEnter 2 for No.2 mode. You need to implement every setting.");
+        System.out.println("\tEnter 3 for No.3 mode, You only change the planetary system's amount.");
         System.out.print("\tWaiting for input...");
         int mode = 1;
         if (scanner.hasNextInt()) {
@@ -112,12 +113,17 @@ public class Client {
                     System.out.print("Waiting for input...");
                     if (scanner.hasNextInt()) this.minStarLife = scanner.nextInt();
                     break;
+                case 3:
+                    System.out.println("Please enter the planetary system's amount.");
+                    System.out.print("Waiting for input...");
+                    if (scanner.hasNextInt()) this.plantarySystemAmount = scanner.nextInt();
+                    break;
             }
         }
-        System.out.println("All set. Now create the galaxy...");
+        System.out.println("\nAll set. Now create the galaxy...");
         galaxy = new Galaxy(plantarySystemAmount, averageDistance, minStarDistance, maxPlanetAmount, elementAmount, maxEnergyofStar, minStarLife);
         science = new Science(elementAmount, maxScienceTreeLevel, maxScienceTreeBranch);
-        System.out.println("Creation process complete. Now tell me what kinds of information you want to know.");
+        System.out.println("\nCreation process complete. Now tell me what kinds of information you want to know.");
         boolean c = true;
         while (c) {
             System.out.println("Here is a list of information you can get, to get what you need, enter its number.");
@@ -129,8 +135,10 @@ public class Client {
             System.out.println("5. A list of basic information of the planetary system, sorted by their distance");
             System.out.print("Waiting for input...");
             if (scanner.hasNextInt()) {
-                int i, j, k;
-                switch (scanner.nextInt()) {
+                int i, j, in;
+                in = scanner.nextInt();
+                System.out.println("You selected: " + in + ".");
+                switch (in) {
                     case 0:
                         System.out.println(galaxy.getPlantarySystems().get(planetarySystemReferenceForPrint).getDescription());
                         planetFullDescription(resourceListSizeForPrint, planetCodeForPrint, maxPlanetAmount, plantarySystemAmount);
@@ -203,6 +211,7 @@ public class Client {
         System.out.println("Please enter the seed.");
         System.out.print("\tWaiting for input...");
         if (publicScanner.hasNextInt()) seed = publicScanner.nextInt();
+        System.out.print("You entered the seed as " + seed + ".\n");
         random = new Random(seed);
         Client client = new Client();
     }
