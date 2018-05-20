@@ -1,4 +1,3 @@
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,25 +34,26 @@ class Galaxy {
         //System.out.println(planetarySystemsSorted.size());
     }
 
-    void printPlanetByDistance(int amount){
-        if(amount == 0){
-            for(int i = 0; i < planetarySystemsSorted.size(); ++i){
+    void printPlanetListByDistance(int index, int amount) {
+        if (amount == 0) {
+            for (int i = 0; i < planetarySystemsSorted.size(); ++i) {
                 System.out.println(planetarySystemsSorted.get(i).description);
             }
-        }else {
-            for(int i = 0; i < planetarySystemsSorted.size() && i < amount; ++i){
+        } else {
+            for (int i = index; i < planetarySystemsSorted.size() && i < amount + index; ++i) {
                 System.out.println(planetarySystemsSorted.get(i).description);
             }
         }
     }
-    private void buildSortedStarSystemList(){
+
+    private void buildSortedStarSystemList() {
         this.planetarySystemsSorted.addAll(plantarySystems);
         boolean needSort = true;
         PlanetarySystem temp;
-        while(needSort){
+        while (needSort) {
             needSort = false;
-            for(int i = 0; i < plantarySystemAmount - 1; ++i){
-                if(planetarySystemsSorted.get(i).centerDistance > planetarySystemsSorted.get(i + 1).centerDistance){
+            for (int i = 0; i < plantarySystemAmount - 1; ++i) {
+                if (planetarySystemsSorted.get(i).centerDistance > planetarySystemsSorted.get(i + 1).centerDistance) {
                     temp = planetarySystemsSorted.get(i);
                     planetarySystemsSorted.set(i, planetarySystemsSorted.get(i + 1));
                     planetarySystemsSorted.set(i + 1, temp);
@@ -161,12 +161,21 @@ class Galaxy {
         return this.plantarySystems.get(Sreference).getStar().getDescription();
     }
 
-    String getPDescriptionByRef(int Preference) {
-        if (this.plantarySystemAmount <= Preference / maxPlanetAmount || this.plantarySystems.get(Preference / maxPlanetAmount).getPlanetAmount() <= Preference % maxPlanetAmount)
+    String getPDescriptionByCode(int planetCode) {
+        if (this.plantarySystemAmount <= planetCode / maxPlanetAmount || this.plantarySystems.get(planetCode / maxPlanetAmount).getPlanetAmount() <= planetCode % maxPlanetAmount)
             return "There's an error with the reference. No planet was found.";
-        String description = this.plantarySystems.get(Preference / maxPlanetAmount).getPlanets().get(Preference % maxPlanetAmount).getDescription();
-        description += ", and it's belong to the plantary system named \"" + plantarySystems.get(Preference / maxPlanetAmount).getName() + "\".";
+        String description = this.plantarySystems.get(planetCode / maxPlanetAmount).getPlanets().get(planetCode % maxPlanetAmount).getDescription();
+        description += ", and it's belong to the plantary system named \"" + plantarySystems.get(planetCode / maxPlanetAmount).getName() + "\".";
         return description;
+    }
+
+    String getPDescriptionByReferences(int planetarySystemReference, int planetReference) {
+        if (this.plantarySystems.size() <= planetarySystemReference)
+            return "The reference for planetary system is too large.";
+        if (this.plantarySystems.get(planetarySystemReference).planets.size() <= planetReference) {
+            return "The reference for planet is too large. For the planetary system you chose, the max reference for the its planets is [" + (this.plantarySystems.get(planetarySystemReference).planets.size() - 1) + "].";
+        }
+        return this.plantarySystems.get(planetarySystemReference).planets.get(planetReference).description;
     }
 
     class PlanetarySystem {
@@ -203,16 +212,16 @@ class Galaxy {
             int starDistance;
             for (int i = 0; i < planetAmount; i++) {
                 starDistance = minStarDistance + Client.random.nextInt(minStarDistance * maxPlanetAmount + 1);
-                this.planets.add(new Planet(this.reference * maxPlanetAmount + planetReference, starDistance, this.centerDistance, this.centerDistanceLevel));
+                this.planets.add(new Planet(planetReference, this.reference * maxPlanetAmount + planetReference, starDistance, this.centerDistance, this.centerDistanceLevel));
                 planetReference++;
             }
             //Star generation.
             double efactor = 1.0 / maxPlanetAmount;
             efactor *= planetAmount;
-            efactor *= 0.5 + 0.5 * (distanceLevelAmount - this.centerDistanceLevel)/distanceLevelAmount;
+            efactor *= 0.5 + 0.5 * (distanceLevelAmount - this.centerDistanceLevel) / distanceLevelAmount;
             double energy = efactor * maxEnergyofStar;
-            double sfactor = minStarLife/efactor;
-            double rspeed = energy/sfactor;
+            double sfactor = minStarLife / efactor;
+            double rspeed = energy / sfactor;
             this.star = new Star(this.reference, energy, rspeed);
         }
 
@@ -316,6 +325,7 @@ class Galaxy {
 
         class Planet {
             private int reference;
+            private int code;
             private int centerDistance;
             private int centerDistanceLevel;
             private String name = "Undiscovered Planet";
@@ -325,8 +335,9 @@ class Galaxy {
             private Dock dock;
             private Civilization civilization;
 
-            Planet(int reference, int starDistance, int centerDistance, int centerDistanceLevel) {
+            Planet(int reference, int code, int starDistance, int centerDistance, int centerDistanceLevel) {
                 this.reference = reference;
+                this.code = code;
                 this.starDistance = starDistance;
                 this.centerDistance = centerDistance;
                 this.centerDistanceLevel = centerDistanceLevel;
@@ -334,20 +345,24 @@ class Galaxy {
                 generateResources();
             }
 
+            int getReference() {
+                return reference;
+            }
+
             String getResourcesDescription(int counter) {
                 StringBuilder result = new StringBuilder();
-                if(counter != 0){
+                if (counter != 0) {
                     result.append("This is a list of the first ").append(counter < resources.size() ? counter : resources.size()).append(" kind(s) of resources on the planet named \"").append(name).append("\":\n");
                     for (int i = 0; i < counter && i < resources.size(); ++i) {
                         result.append("Name: \"").append(resources.get(i).getName()).append("\", Code: [").append(resources.get(i).getReference());
                         result.append("].\n\t - Quentity: [").append(resources.get(i).getQuantity()).append("].\n");
                     }
 
-                }else{
+                } else {
                     result.append("This is a total list of resources on the planet named \"").append(name).append("\":\n");
-                    for (int i = 0; i < resources.size(); ++i) {
-                        result.append("|Name: ").append(resources.get(i).getName()).append(", \tCode: [").append(resources.get(i).getReference());
-                        result.append("].\n|\t Quentity: ").append(resources.get(i).getQuantity()).append(".\n");
+                    for (Resource resource : resources) {
+                        result.append("|Name: ").append(resource.getName()).append(", \tCode: [").append(resource.getReference());
+                        result.append("].\n|\t Quentity: ").append(resource.getQuantity()).append(".\n");
                     }
                 }
                 return result.toString();
@@ -355,11 +370,12 @@ class Galaxy {
 
             void setDescription() {
                 this.description += "This planet is \"" + this.name;
-                this.description += "\". The reference number for this planet is [" + this.reference % maxPlanetAmount + "]";
+                this.description += "\". The reference number for this planet is [" + this.reference % maxPlanetAmount + "].";
+                this.description += "\nThe code for this planet is [" + code + "].";
             }
 
-            int getReference() {
-                return reference;
+            int getCode() {
+                return code;
             }
 
             int getCenterDistance() {
@@ -398,31 +414,26 @@ class Galaxy {
                 scale.add(Integer.MAX_VALUE / 2 + 1);
                 int e;
                 int rand = 0;
-                while(currentAmount > 0){
+                while (currentAmount > 0) {
                     rand = Client.random.nextInt(100);
                     e = rand < 50 ? 2 : rand < 80 ? 3 : 4;
                     currentAmount /= e;
                     scale.add(currentAmount);
                     totalScale += currentAmount;
                 }
-                    List<Double> quentityList = new ArrayList<>();
-                for(int i = 0; i < scale.size(); ++i) {
-                    quentityList.add((double)totalQuentity * scale.get(i) / totalScale);
+                List<Double> quentityList = new ArrayList<>();
+                for (Integer aScale : scale) {
+                    quentityList.add((double) totalQuentity * aScale / totalScale);
                 }
 
                 int tempReference = centerDistanceLevel; //Most possible kind of element which will be the major part ot resources.
                 int counter = 1;
-                boolean[] referenceCaptureList = new boolean[distanceLevelAmount];
                 ArrayList<Integer> tempReferenceList = new ArrayList<>();
-                for(boolean i : referenceCaptureList){
-                    i = true;
-                }
-
-                for(Double i : quentityList){
+                for (Double i : quentityList) {
                     tempReferenceList.add(tempReference);
                     tempReference += counter % 2 == 0 ? counter : -counter;
                     counter++;
-                    if(tempReference < 0 || tempReference >= distanceLevelAmount){
+                    if (tempReference < 0 || tempReference >= distanceLevelAmount) {
                         tempReference += counter % 2 == 0 ? counter : -counter;
                         counter++;
                     }
@@ -430,9 +441,9 @@ class Galaxy {
                 List<Integer> shuffleListP1 = new ArrayList<>();
                 List<Integer> shuffleListP2 = new ArrayList<>();
                 List<Integer> shuffleListP3 = new ArrayList<>();
-                for(int i = 0; i < tempReferenceList.size(); ++i){
-                    if(i < 5) shuffleListP1.add(tempReferenceList.get(i));
-                    else if(i < 12)shuffleListP2.add(tempReferenceList.get(i));
+                for (int i = 0; i < tempReferenceList.size(); ++i) {
+                    if (i < 5) shuffleListP1.add(tempReferenceList.get(i));
+                    else if (i < 12) shuffleListP2.add(tempReferenceList.get(i));
                     else shuffleListP3.add(tempReferenceList.get(i));
                 }
                 Collections.shuffle(shuffleListP1, Client.random);
@@ -442,8 +453,9 @@ class Galaxy {
                 finalReferenceList.addAll(shuffleListP1);
                 finalReferenceList.addAll(shuffleListP2);
                 finalReferenceList.addAll(shuffleListP3);
-                for(int i = 0; i < finalReferenceList.size(); ++i){
-                    if(quentityList.get(i) != 0)resources.add(new Resource(finalReferenceList.get(i), quentityList.get(i)));
+                for (int i = 0; i < finalReferenceList.size(); ++i) {
+                    if (quentityList.get(i) != 0)
+                        resources.add(new Resource(finalReferenceList.get(i), quentityList.get(i)));
                 }
                 /*int upperBound = 4;
                 int lowerBound = 1;
