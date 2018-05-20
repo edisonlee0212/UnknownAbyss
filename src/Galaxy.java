@@ -11,11 +11,13 @@ class Galaxy {
     private double[] distanceLevel;
     private int minStarDistance; //Min distance between the star and its nearest planet
     private int maxPlanetAmount; //Max planet amount within a planet system
+    private int maxEnergyofStar;
+    private int minStarLife;
     private List<PlanetarySystem> plantarySystems;
     private List<PlanetarySystem> planetarySystemsSorted;
 
 
-    Galaxy(int plantarySystemAmount, int averageRange, int minStarDistance, int maxPlanetAmount, int elementAmount) {
+    Galaxy(int plantarySystemAmount, int averageRange, int minStarDistance, int maxPlanetAmount, int elementAmount, int maxEnergyofStar, int minStarLife) {
         this.plantarySystems = new ArrayList<>();
         this.planetarySystemsSorted = new ArrayList<>();
         this.maxPlanetAmount = maxPlanetAmount;
@@ -23,6 +25,8 @@ class Galaxy {
         this.minStarDistance = minStarDistance;
         this.plantarySystemAmount = plantarySystemAmount;
         this.distanceLevelAmount = elementAmount;
+        this.maxEnergyofStar = maxEnergyofStar;
+        this.minStarLife = minStarLife;
         this.distanceLevel = new double[distanceLevelAmount];
         double length = Math.cbrt(plantarySystemAmount);
         this.maxBound = (int) length * averageRange;
@@ -194,6 +198,7 @@ class Galaxy {
         }
 
         private void buildPlanetsAndStar(long seed, int planetAmount) {
+            //Planet generation.
             int planetReference = 0;
             int starDistance;
             for (int i = 0; i < planetAmount; i++) {
@@ -201,11 +206,14 @@ class Galaxy {
                 this.planets.add(new Planet(this.reference * maxPlanetAmount + planetReference, starDistance, this.centerDistance, this.centerDistanceLevel));
                 planetReference++;
             }
-            double energy = 0;
-            double rspeed = 0;
-            
+            //Star generation.
+            double efactor = 1.0 / maxPlanetAmount;
+            efactor *= planetAmount;
+            efactor *= 0.5 + 0.5 * (distanceLevelAmount - this.centerDistanceLevel)/distanceLevelAmount;
+            double energy = efactor * maxEnergyofStar;
+            double sfactor = minStarLife/efactor;
+            double rspeed = energy/sfactor;
             this.star = new Star(this.reference, energy, rspeed);
-
         }
 
         private void setDescription() {

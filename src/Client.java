@@ -5,6 +5,7 @@ import java.util.Random;
 public class Client {
     static long seed = 2;
     //All the comments below are based on seed = 2.
+    //Same seed, same settings, exactly the same world. Any slightest difference will result in a complete new world.
     static Random random = new Random(seed);
     private Galaxy galaxy;
     private Science science;
@@ -13,13 +14,15 @@ public class Client {
     }
     private Client(){
         //Below are settings for galaxy builder.
-        /*Changeable*/int maxPlanetAmount = 15;
+        /*Changeable*/int maxPlanetAmount = 15; //The up limit of the amount of planets within a planetary system.
         /*Changeable*/int plantarySystemAmount = 100; //Do not exceed 100000.
-        /*Changeable*/int averageDistance = 1000;
-        /*Changeable*/int minStarDistance = 200;
-        /*Changeable*/int elementAmount = 118;
-        /*Changeable*/int maxScienceTreeLevel = 9;
-        /*Changeable*/int maxScienceTreeBranch = 3;
+        /*Changeable*/int averageDistance = 1000; //The average distance of the nearest planetary system.
+        /*Changeable*/int minStarDistance = 200; //The minimum distance between the star and its nearest planet.
+        /*Changeable*/int elementAmount = 118; //The total amount of chemical/resource element of the game. Only 0-117 has its name, but u can still define it as a number larger than 118.
+        /*Changeable*/int maxScienceTreeLevel = 9; //The maximum level amount of the science tree, the larger level amount, the larger the tree will be.
+        /*Changeable*/int maxScienceTreeBranch = 3; //The maximum branch amount of the star, the larger branch, the larger tree.
+        /*Changeable*/int maxEnergyofStar = 100000000; //The up limit of the total energy stored within a star. This should also be proportional to the mass of the star.
+        /*Changeable*/int minStarLife = 2000000; //The minimum life time of the star, 1/time unit. The larger the star is, the shorter its life will be.
         //==============================================================================================================
         //Below are the settings for information printers.
         /*Changeable*/int planetReferenceForPrint = 95;
@@ -32,14 +35,14 @@ public class Client {
         /*Changeable*/int scienceTreePrinterNodeAmount = 10;
         /*Changeable*/int amountForPlanetDefPrinter = 10;
         //==============================================================================================================
-        galaxy = new Galaxy(plantarySystemAmount, averageDistance, minStarDistance, maxPlanetAmount, elementAmount);
+        galaxy = new Galaxy(plantarySystemAmount, averageDistance, minStarDistance, maxPlanetAmount, elementAmount, maxEnergyofStar, minStarLife);
         science = new Science(elementAmount, maxScienceTreeLevel, maxScienceTreeBranch);
         //==============================================================================================================
         planetFullDescription(resourceListSizeForPrint, planetReferenceForPrint, maxPlanetAmount, plantarySystemAmount);
         //==============================================================================================================
         scienceDescription(scienceTreePrinterStartingIndex,scienceTreePrinterNodeAmount);
         //==============================================================================================================
-        System.out.println("Here is a part  of a list of the descriptions of the planetary system, sorted by their distance to the center of the galaxy:");
+        System.out.println("Here is a part of a list of the descriptions of the planetary system, sorted by their distance to the center of the galaxy:");
         galaxy.printPlanetByDistance(amountForPlanetDefPrinter);
     }
 
