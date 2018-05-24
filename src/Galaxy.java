@@ -331,10 +331,10 @@ class Galaxy {
             private String name = "Undiscovered Planet";
             private String description = "";
             private int starDistance;
-            private List<Resource> resources = new ArrayList<>();
+            private List<Resource> resources;
             private Dock dock;
             private Civilization civilization;
-
+            private List<Infrastructure> infrastructures;
             Planet(int reference, int code, int starDistance, int centerDistance, int centerDistanceLevel) {
                 this.reference = reference;
                 this.code = code;
@@ -342,6 +342,8 @@ class Galaxy {
                 this.centerDistance = centerDistance;
                 this.centerDistanceLevel = centerDistanceLevel;
                 this.setDescription();
+                this.resources = new ArrayList<>();
+                this.infrastructures = new ArrayList<>();
                 generateResources();
             }
 
