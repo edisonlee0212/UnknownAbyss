@@ -1,3 +1,5 @@
+import com.sun.istack.internal.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,9 +15,6 @@ class Science {
     private int maxBranchAmount;
     private double specialFactor;
     private List<Node> tree;
-    //private List<Integer> levelList = new ArrayList<>();
-    //private List<Double> energyList = new ArrayList<>();
-    //private List<Resource> resourcesList = new ArrayList<>();
     private int nodeAmount = 0;
     private int counter = 0;
     private int amount;

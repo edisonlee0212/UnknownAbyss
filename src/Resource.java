@@ -1,13 +1,9 @@
 class Resource {
     private int reference;
-    private String name;
     private double quantity;
 
     Resource(int reference, double quantity) {
         this.reference = reference;
-        if(reference < Element.values().length) {
-            this.name = Element.values()[reference].name();
-        } else this.name = "UE" + reference;
         this.quantity = quantity;
     }
 
@@ -16,6 +12,10 @@ class Resource {
     }
 
     String getName() {
+        String name;
+        if(reference < Element.values().length) {
+            name = Element.values()[reference].name();
+        } else name = "UE" + reference;
         return name;
     }
 

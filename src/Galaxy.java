@@ -459,63 +459,7 @@ class Galaxy {
                     if (quentityList.get(i) != 0)
                         resources.add(new Resource(finalReferenceList.get(i), quentityList.get(i)));
                 }
-                /*int upperBound = 4;
-                int lowerBound = 1;
-                int total = 0;
-                List<Integer> tempResources = new ArrayList<>();
-                for (int i = 0; i < 25; i++) { //Max 26 kinds of elements appear on any single planet. This is unchangeable due to the algorithm.
-                    tempResources.add(Client.random.nextInt(upperBound - lowerBound + 1) + lowerBound);
-                    upperBound *= 2;
-                    lowerBound *= 2;
-                    total += tempResources.get(i);
-                }
 
-                tempResources.add((Integer.MAX_VALUE / 16) - total);
-                double factor = (double) totalQuentity / (Integer.MAX_VALUE / 16);
-                double temp;
-                List<Integer> resourceResult = new ArrayList<>();
-                for (int i = 0; i < 25; i++) {
-                    temp = factor * tempResources.get(i);
-                    resourceResult.add((int) temp);
-                    totalQuentity -= (int) temp;
-                }
-                resourceResult.add(totalQuentity);*/
-
-
-                /*List<Integer> elementReference = new ArrayList<>();
-                List<Integer> elementReferenceT1 = new ArrayList<>();
-                while (elementReferenceT1.size() < 3) {
-                    if (tempReference >= 0 && tempReference < 26) {
-                        elementReferenceT1.add(tempReference);
-                    }
-                    tempReference += counter % 2 == 0 ? counter : -1 * counter;
-                    counter++;
-                }
-                List<Integer> elementReferenceT2 = new ArrayList<>();
-                while (elementReferenceT2.size() < 8) {
-                    if (tempReference >= 0 && tempReference < 26) {
-                        elementReferenceT2.add(tempReference);
-                    }
-                    tempReference += counter % 2 == 0 ? counter : -1 * counter;
-                    counter++;
-                }
-                List<Integer> elementReferenceT3 = new ArrayList<>();
-                while (elementReferenceT3.size() < 15) {
-                    if (tempReference >= 0 && tempReference < 26) {
-                        elementReferenceT3.add(tempReference);
-                    }
-                    tempReference += counter % 2 == 0 ? counter : -1 * counter;
-                    counter++;
-                }
-                Collections.shuffle(elementReferenceT1, Client.random);
-                Collections.shuffle(elementReferenceT2, Client.random);
-                Collections.shuffle(elementReferenceT3, Client.random);
-                elementReference.addAll(elementReferenceT1);
-                elementReference.addAll(elementReferenceT2);
-                elementReference.addAll(elementReferenceT3);
-                for (int i = 0; i < 26; i++) {
-                    resources.add(new Resource(elementReference.get(i), resourceResult.get(i)));
-                }*/
             }
         }
     }
