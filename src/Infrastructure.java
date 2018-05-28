@@ -7,14 +7,17 @@ class Infrastructure {
     boolean online;
     double energyUsage;
     int technologyLevel;
-
-    Infrastructure(double defense, double strength, List<Technology> technologies, double energyUsage, int technologyLevel) {
+    double workers;
+    Infrastructure(double defense, double strength, List<Technology> technologies, double energyUsage, int technologyLevel, double workers) {
         this.defense = defense;
         this.strength = strength;
         this.technologies = technologies;
         this.energyUsage = energyUsage;
         this.technologyLevel = technologyLevel;
+        this.workers = workers;
+        this.online = false;
     }
+
 
     double getDefense() {
         return defense;

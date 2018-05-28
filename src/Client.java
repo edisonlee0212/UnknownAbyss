@@ -238,7 +238,7 @@ public class Client {
         int planetNo = planetCode % maxPlanetAmount;
         if (galaxy.getPlantarySystems().get(starReference).getPlanets().size() > planetNo) {
             System.out.println(galaxy.getPDescriptionByCode(planetCode));
-            System.out.println(galaxy.getSSDescriptionByRef(starReference));
+            System.out.println(galaxy.getPSDescriptionByRef(starReference));
             System.out.print("The above star system has a star. ");
             System.out.print(galaxy.getPlantarySystems().get(starReference).getStar().getDescription());
             System.out.println(galaxy.getPlantarySystems().get(starReference).getPlanets().get(planetNo).getResourcesDescription(resourceListSize));

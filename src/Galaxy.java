@@ -3,17 +3,17 @@ import java.util.Collections;
 import java.util.List;
 
 class Galaxy {
-    private int plantarySystemAmount;
+    private int plantarySystemAmount; //Total amount of planetary system in the galaxy.
     private int maxBound; //Boundary for the galaxy.
     private int averageRange; //Average distance between closet stars
-    private int distanceLevelAmount;
-    private double[] distanceLevel;
+    private int distanceLevelAmount; //Same as element amount, this val actually means nothing, it helped resource generation.
+    private double[] distanceLevel; //Store distance level.
     private int minStarDistance; //Min distance between the star and its nearest planet
     private int maxPlanetAmount; //Max planet amount within a planet system
-    private int maxEnergyofStar;
-    private int minStarLife;
-    private List<PlanetarySystem> plantarySystems;
-    private List<PlanetarySystem> planetarySystemsSorted;
+    private int maxEnergyofStar; //The maximum energy of a star in any planetary system.
+    private int minStarLife; //The maximum lifetime of a star. This helped the star energy radiation speed.
+    private List<PlanetarySystem> plantarySystems; //Collection of plantary system.
+    private List<PlanetarySystem> planetarySystemsSorted; //Sorted by the distance to the center of the galaxy.
 
 
     Galaxy(int plantarySystemAmount, int averageRange, int minStarDistance, int maxPlanetAmount, int elementAmount, int maxEnergyofStar, int minStarLife) {
@@ -31,7 +31,6 @@ class Galaxy {
         this.maxBound = (int) length * averageRange;
         this.buildStarSystemList();
         this.buildSortedStarSystemList();
-        //System.out.println(planetarySystemsSorted.size());
     }
 
     void printPlanetListByDistance(int index, int amount) {
@@ -44,7 +43,7 @@ class Galaxy {
                 System.out.println(planetarySystemsSorted.get(i).description);
             }
         }
-    }
+    } //Printer for test.
 
     private void buildSortedStarSystemList() {
         this.planetarySystemsSorted.addAll(plantarySystems);
@@ -64,10 +63,18 @@ class Galaxy {
     }
 
     private void buildStarSystemList() {
-        double gap = maxBound / Math.cbrt(distanceLevelAmount);
+        /*
+        This method randomly choose certain amount of points in a sphere as the location of each planetary system.
+        This method can further improved by implementing the idea of Perlin Noice, to create star clusters.
+        For now since this is not very important and the Perlin Noice for 3D is too hard, the following method is just a basic random algorithm.
+         */
+        double gap = maxBound / Math.cbrt(distanceLevelAmount); //The gap and following loop helped make sure that the amount of planetary system is equal in each space separated by the distance level.
         for (int i = 0; i < distanceLevelAmount; ++i) {
             distanceLevel[i] = gap * Math.cbrt(i);
         }
+        /*
+        The following code is the main body of random generation. Noted that these code helped make sure that the star is in a sphere in which its volume is depends on the size of the galaxy.
+         */
         int x, y, z;
         int[][] xyz = new int[plantarySystemAmount][3];
         boolean valid = true;
@@ -101,6 +108,10 @@ class Galaxy {
             }
             valid = true;
         }
+        /*
+        The following codes is to help me find out the algorithm actually get what I want by calculating the actual "averageRange".
+        Since these codes is useless but needed for test, I kept these codes in comments.
+         */
         /*double distanceSumX = 0;
         double distanceSumY = 0;
         double distanceSumZ = 0;
@@ -149,18 +160,19 @@ class Galaxy {
         return plantarySystems;
     }
 
-    String getSSDescriptionByRef(int SSreference) {
+    //Get description of planetary system.
+    String getPSDescriptionByRef(int SSreference) {
         if (this.plantarySystemAmount <= SSreference / maxPlanetAmount)
-            return "There's an error with the reference. No star system was found.";
+            return "There's an error with the reference. No planetary system was found.";
         return this.plantarySystems.get(SSreference).getDescription();
     }
-
+    //Get description of stars.
     String getSDescriptionByRef(int Sreference) {
         if (this.plantarySystemAmount <= Sreference / maxPlanetAmount)
             return "There's an error with the reference. No star was found.";
         return this.plantarySystems.get(Sreference).getStar().getDescription();
     }
-
+    //Get description of planets.
     String getPDescriptionByCode(int planetCode) {
         if (this.plantarySystemAmount <= planetCode / maxPlanetAmount || this.plantarySystems.get(planetCode / maxPlanetAmount).getPlanetAmount() <= planetCode % maxPlanetAmount)
             return "There's an error with the reference. No planet was found.";
@@ -168,7 +180,7 @@ class Galaxy {
         description += ", and it's belong to the plantary system named \"" + plantarySystems.get(planetCode / maxPlanetAmount).getName() + "\".";
         return description;
     }
-
+    //Get description of planets.
     String getPDescriptionByReferences(int planetarySystemReference, int planetReference) {
         if (this.plantarySystems.size() <= planetarySystemReference)
             return "The reference for planetary system is too large.";
@@ -177,19 +189,21 @@ class Galaxy {
         }
         return this.plantarySystems.get(planetarySystemReference).planets.get(planetReference).description;
     }
-
+    /*
+    This is the inner class of the galaxy, its said that the relationship between inner class and outer class is like the nose and the face. And the father class and its child class, obviously, father and son.
+     */
     class PlanetarySystem {
-        private int reference;
-        private int planetAmount;
-        private int centerDistance;
+        private int reference; //Used to quickly find the planetary system.
+        private int planetAmount; //Total amount of planets within this planetary system.
+        private int centerDistance; //The distance between this system and the center of the galaxy, used to generate resources.
         private int centerDistanceLevel;
-        private List<Planet> planets;
+        private List<Planet> planets; //List of planets.
         private Star star;
-        private int[] location;
+        private int[] location; //Location of this system in the galaxy.
         private String name;
         private String description;
         private int technologyLevel;
-        private Dock dock;
+        private Dock dock; //Dock, store everything on this planet's orbit.
 
         PlanetarySystem(int reference, int[] location, int planetAmount, int centerDistance, int centerDistanceLevel) {
             this.planets = new ArrayList<>();
@@ -206,6 +220,9 @@ class Galaxy {
             this.setDescription();
         }
 
+        /*
+        The following code helped generate the planet. There's a problem about the
+         */
         private void buildPlanetsAndStar(long seed, int planetAmount) {
             //Planet generation.
             int planetReference = 0;
@@ -351,6 +368,7 @@ class Galaxy {
                 return reference;
             }
 
+
             String getResourcesDescription(int counter) {
                 StringBuilder result = new StringBuilder();
                 if (counter != 0) {
@@ -408,8 +426,17 @@ class Galaxy {
                 return resources;
             }
 
+            /*
+            The resource generation is based on the distance for the planetary system's distance to the center of the galaxy. The further the system is, the kind of higher rank of resource will be generated.
+            This design will urge a civilization to colonize other systems in a certain direction.
+            This means that the civilization which spawned in the center of the galaxy will try its best to conquer the outside world and vice versa.
+            This also results in more counters, more conflicts.
+            BTW, the civilization will have to work out a way to find the correct direction, the direction of the center of the galaxy is never shown to the players.
+            BTW, the civilization will have to work out a way to find the correct direction, the direction of the center of the galaxy is never shown to the players.
+            BTW, the civilization will have to work out a way to find the correct direction, the direction of the center of the galaxy is never shown to the players.
+             */
             void generateResources() {
-                int totalQuentity = Client.random.nextInt(Integer.MAX_VALUE - Integer.MAX_VALUE / 16) + (Integer.MAX_VALUE / 16 + 1);
+                int totalQuantity = Client.random.nextInt(Integer.MAX_VALUE - Integer.MAX_VALUE / 16) + (Integer.MAX_VALUE / 16 + 1);
                 List<Integer> scale = new ArrayList<>();
                 int currentAmount = Integer.MAX_VALUE / 2 + 1;
                 int totalScale = 0;
@@ -425,7 +452,7 @@ class Galaxy {
                 }
                 List<Double> quentityList = new ArrayList<>();
                 for (Integer aScale : scale) {
-                    quentityList.add((double) totalQuentity * aScale / totalScale);
+                    quentityList.add((double) totalQuantity * aScale / totalScale);
                 }
 
                 int tempReference = centerDistanceLevel; //Most possible kind of element which will be the major part ot resources.
