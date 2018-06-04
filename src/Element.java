@@ -1,4 +1,4 @@
-public enum Element {
+enum Element {
     Hydrogen,
     Helium,
     Lithium,
@@ -116,6 +116,5 @@ public enum Element {
     Moscovium,
     Livermorium,
     Tennessine,
-    Oganesson,
-
+    Oganesson
 }

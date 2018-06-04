@@ -10,6 +10,7 @@ class City extends Infrastructure {
     double supportPopulation;
     double activePopulation;
     List<Resource> resourcesUsage;
+    double totalWorkers;
 
 
     City(double defense, double strength, List<Technology> technologies, double energyUsage, int technologyLevel, double workers) {

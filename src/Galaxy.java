@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 class Galaxy {
     private int plantarySystemAmount; //Total amount of planetary system in the galaxy.
@@ -14,7 +15,7 @@ class Galaxy {
     private int minStarLife; //The maximum lifetime of a star. This helped the star energy radiation speed.
     private List<PlanetarySystem> plantarySystems; //Collection of plantary system.
     private List<PlanetarySystem> planetarySystemsSorted; //Sorted by the distance to the center of the galaxy.
-
+    private Integer[] elementUsageList;
 
     Galaxy(int plantarySystemAmount, int averageRange, int minStarDistance, int maxPlanetAmount, int elementAmount, int maxEnergyofStar, int minStarLife) {
         this.plantarySystems = new ArrayList<>();
@@ -29,8 +30,26 @@ class Galaxy {
         this.distanceLevel = new double[distanceLevelAmount];
         double length = Math.cbrt(plantarySystemAmount);
         this.maxBound = (int) length * averageRange;
+        elementUsageList = new Integer[elementAmount];
+        this.buildElementUsageList();
         this.buildStarSystemList();
         this.buildSortedStarSystemList();
+    }
+
+    private void buildElementUsageList(){
+        int usage = 0;
+        int temp = 1;
+        int usageAmount = Usage.values().length;
+        for(int i = this.distanceLevelAmount - 1; i >= 0; --i) {
+            for (int j = usageAmount; j > 0; --j) {
+                usage += Client.random.nextInt(10) * temp;
+                temp *= 10;
+            }
+            elementUsageList[i] = usage;
+            usage = 0;
+            temp = 1;
+        }
+
     }
 
     void printPlanetListByDistance(int index, int amount) {
